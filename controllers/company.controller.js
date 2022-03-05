@@ -12,6 +12,9 @@ const usersDb = JSON.parse(
 const productsDb = JSON.parse(
   fs.readFileSync(__dirname + "/../db/products.json", "utf-8")
 );
+const newOrdersDb = JSON.parse(
+  fs.readFileSync(__dirname + "/../db/newOrders.json", "utf-8")
+);
 
 export const findAll = (req, res) => {
   // console.log("orders :>> ", orders);
@@ -20,13 +23,18 @@ export const findAll = (req, res) => {
 
 export const upload = (req, res) => {
   const data = req.body;
+  // TODO: add in params to take additional data and add to 'newIem' with spread operator
   console.log("upload data :>> ", data);
   // TODO: seperate the data into multiple objects (one for each item), then add
   // productId field which can get from products.json. Then
   const newOrdersArray = data.items.map((item) => {
-    const productId = productsDb[item.item];
-    const shippingAddress = customersDb[data.buyer];
-    const shippingTarget = "xxx";
+    const productId = productsDb.find(
+      (product) => product.name === item.item
+    ).productId;
+    const shippingAddress = customersDb.find(
+      (customer) => customer.name === data.buyer
+    ).address;
+    const shippingTarget = "xxx"; // TODO:
     const newItem = {
       buyer: data.buyer,
       productId,
@@ -34,8 +42,25 @@ export const upload = (req, res) => {
       shippingAddress,
       shippingTarget,
     };
+    return newItem;
   });
-  res.send(data);
+  console.log("newOrdersArray :>> ", newOrdersArray);
+
+  let newOrdersJson = JSON.stringify(newOrdersArray);
+  fs.writeFileSync(__dirname + "/../db/newOrders.js", newOrdersJson);
+  res.status(200).send(newOrders);
+};
+
+export const search = (req, res) => {
+  const { productId, buyer, shippingTarget } = req.query;
+  const r = ordersDb.filter((order) => {
+    return (
+      order.productId === productId || order.buyer === buyer
+      // || order.shippingTarget > shippingTarget
+    );
+  });
+  console.log("search returns :>> ", r);
+  res.send(r);
 };
 
 // NOTE: go from this:

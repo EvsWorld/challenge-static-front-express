@@ -26,7 +26,6 @@ function startServer() {
   app.use(
     morgan(":method :url  :req[header]  |   :response-time  |  :date[web]")
   );
-
   app.use(bodyParser.json());
   app.use(bodyParser.json({ extended: true }));
   app.use(express.static("static"));
@@ -44,8 +43,7 @@ function startServer() {
 
   app.get("/show", controller.findAll);
   app.post("/upload", controller.upload);
-  // app.use("/api/show", routes.company);
-  // app.use("/api/search", routes.company);
+  app.get("/search", controller.search);
   // app.use("/api/company", routes.company);
 
   app.get("/random", (req, res) => res.send(generateRandomNumber()));
