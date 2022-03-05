@@ -21,9 +21,9 @@ export const findAll = (req, res) => {
   res.send(newOrdersDb);
 };
 
+// TODO: modify to accept form data via a POST request with a content type of application/x-www-form-urlencoded.
 export const upload = (req, res) => {
   const data = req.body;
-  // TODO: add in params to take additional data and add to 'newIem' with spread operator
   console.log("upload data :>> ", data);
   // TODO: seperate the data into multiple objects (one for each item), then add
   // productId field which can get from products.json. Then

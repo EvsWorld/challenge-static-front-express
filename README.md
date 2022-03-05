@@ -1,6 +1,7 @@
 ## Challenge Goal
 
 Your goal is to implement a Node.js server for a widget shipping facility to import JSON orders, extract and transform its contents, store it and then provide an interface to view and search the data.
+
 This application has multiple stages.
 
 1: Serve the static web pages in the /static directory at http://localhost:8080/
@@ -8,6 +9,7 @@ This application has multiple stages.
 2: Implement the endpoint http://localhost:8080/auth to Authenticate usernames and passwords (from the login.html page) against the included users.json file. Username and password will be supplied as POST parameters. Upon failure user should be redirected back to login.html. On success user should be redirected to home.html.
 
 All requests below, and static file requests other than for /, /index.html and /login.html, should require the user to be authenticated first. How you store/check the information is up to you. If a user is not authenticated they should be redirected to the login page.
+
 3: Implement an endpoint http://localhost:8080/show which responds to GET requests and returns a JSON array of all the data objects in the system. The project contains an existing dataset: orders.json which should be used as an initial set of data. This data needs to be parsed upon loading and converting to format shown in the section Data Formats. This can be tested from http://localhost:8080/show.html. Any new orders received from requirement 4 should also be shown.
 
 4: Implement an endpoint http://localhost:8080/upload that can take both a JSON file input via a POST request with content type of application/json, and form data via a POST request with a content type of application/x-www-form-urlencoded. Please see the Data Formats section for what data to extract, and how to transform it before storing. How the data is stored is up to you, but it should not be lost if the server is stopped and restarted. This can be tested from http://localhost:8080/upload.html which can perform both types of data upload.
