@@ -50,6 +50,7 @@ export const upload = (req, res) => {
   // TODO: append to end
   fs.writeFileSync(__dirname + "/../db/newOrders.json", newOrdersJson);
   res.status(200).send(newOrdersArray);
+  return newOrder;
 };
 
 export const search = (req, res) => {
