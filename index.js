@@ -2,6 +2,7 @@
  Your solution should go here.
 */
 
+import * as controller from "./controllers/company.controller";
 import routes from "./routes";
 import { findOne } from "./controllers/company.controller";
 const http = require("http"),
@@ -40,9 +41,10 @@ function startServer() {
     });
   });
 
-  app.use("/api/show", routes.company);
-  app.use("/api/search", routes.company);
-  app.use("/api/company", routes.company);
+  app.get("/show", controller.findAll);
+  // app.use("/api/show", routes.company);
+  // app.use("/api/search", routes.company);
+  // app.use("/api/company", routes.company);
 
   app.get("/random", (req, res) => res.send(generateRandomNumber()));
 

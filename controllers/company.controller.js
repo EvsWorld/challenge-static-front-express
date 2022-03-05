@@ -1,14 +1,11 @@
 import fs from "fs";
 
-const jsonData = fs.readFileSync(
-  __dirname + "/../db/companiesWithArrays.json",
-  "utf-8"
-);
+const jsonData = fs.readFileSync(__dirname + "/../db/orders.json", "utf-8");
 
 export const findAll = (req, res) => {
-  const companies = JSON.parse(jsonData);
-  // console.log("companies :>> ", companies);
-  res.send(companies);
+  const orders = JSON.parse(jsonData);
+  // console.log("orders :>> ", orders);
+  res.send(orders);
 };
 
 export const findOne = (i) => {
