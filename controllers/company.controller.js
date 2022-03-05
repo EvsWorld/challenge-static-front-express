@@ -18,7 +18,7 @@ const newOrdersDb = JSON.parse(
 
 export const findAll = (req, res) => {
   // console.log("orders :>> ", orders);
-  res.send(ordersDb);
+  res.send(newOrdersDb);
 };
 
 export const upload = (req, res) => {
@@ -45,15 +45,16 @@ export const upload = (req, res) => {
     return newItem;
   });
   console.log("newOrdersArray :>> ", newOrdersArray);
-
-  let newOrdersJson = JSON.stringify(newOrdersArray);
-  fs.writeFileSync(__dirname + "/../db/newOrders.js", newOrdersJson);
-  res.status(200).send(newOrders);
+  newOrdersArray.forEach((order) => newOrdersDb.push(order));
+  let newOrdersJson = JSON.stringify(newOrdersDb);
+  // TODO: append to end
+  fs.writeFileSync(__dirname + "/../db/newOrders.json", newOrdersJson);
+  res.status(200).send(newOrdersArray);
 };
 
 export const search = (req, res) => {
   const { productId, buyer, shippingTarget } = req.query;
-  const r = ordersDb.filter((order) => {
+  const r = newOrdersDb.filter((order) => {
     return (
       order.productId === productId || order.buyer === buyer
       // || order.shippingTarget > shippingTarget
