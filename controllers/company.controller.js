@@ -54,49 +54,19 @@ export const upload = (req, res) => {
 
 export const search = (req, res) => {
   const { productId, buyer, shippingTarget } = req.query;
+  console.log("productId :>> ", typeof productId);
+  console.log("{ productId, buyer, shippingTarget } :>> ", {
+    productId,
+    buyer,
+    shippingTarget,
+  });
   const r = newOrdersDb.filter((order) => {
     return (
-      order.productId === productId || order.buyer === buyer
-      // || order.shippingTarget > shippingTarget
+      order.productId === Number(productId) ||
+      order.buyer === buyer ||
+      order.shippingTarget > shippingTarget
     );
   });
   console.log("search returns :>> ", r);
-  res.send(r);
+  res.json(r);
 };
-
-// NOTE: go from this:
-// {
-//   "buyer" : "Sprocket Corp",
-//   "items" : [
-//     {
-//       "item":"Simple Widget",
-//       "quantity" : 20
-//     },
-//     {
-//       "item":"Free sticker",
-//       "quantity": 1
-//     }
-//   ],
-//   "orderDate" : "2018/05/23",
-//   "orderTime" : "14:23",
-//   "shippingDate" : "2018/05/28",
-//   "shippingTime" : "13:00",
-//   "saleRoute" : "Internet"
-// }
-
-// ....To this:
-
-// {
-//   "buyer" : "Sprocket Corp",
-//   "productId" : 2,
-//   "quantity" : 20,
-//   "shippingAddress" : "123 Smith Street, County, Country.",
-//   "shippingTarget" : 1527512400000
-// }
-// {
-//   "buyer" : "Sprocket Corp",
-//   "productId" : 40,
-//   "quantity" : 1,
-//   "shippingAddress" : "123 Smith Street, County, Country.",
-//   "shippingTarget" : 1527512400000
-// }
