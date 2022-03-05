@@ -1,0 +1,25 @@
+{
+  "name": "geektastic-shipping-facility",
+  "version": "1.0.0",
+  "description": "Geektastic test for Node",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon --exec babel-node index.js"
+  },
+  "author": "",
+  "dependencies": {
+    "express": "^4.16.3",
+    "fs": "^0.0.1-security",
+    "morgan": "^1.10.0",
+    "socket.io": "^4.4.1"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.16.8",
+    "@babel/core": "^7.16.7",
+    "@babel/node": "^7.16.8",
+    "@babel/preset-env": "^7.16.8",
+    "babel-plugin-module-resolver": "^4.1.0",
+    "nodemon": "^2.0.15"
+  }
+}
