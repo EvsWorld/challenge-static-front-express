@@ -1,7 +1,7 @@
 /*
  Your solution should go here.
 */
-
+import bodyParser from "body-parser";
 import * as controller from "./controllers/company.controller";
 import routes from "./routes";
 import { findOne } from "./controllers/company.controller";
@@ -9,7 +9,6 @@ const http = require("http"),
   express = require("express"),
   morgan = require("morgan"),
   { Server } = require("socket.io");
-//  youCouldCallThisAnythingBcImportedAsDefault  = require("socket.io");
 
 const SERVER_PORT = 8080;
 
@@ -28,6 +27,8 @@ function startServer() {
     morgan(":method :url  :req[header]  |   :response-time  |  :date[web]")
   );
 
+  app.use(bodyParser.json());
+  app.use(bodyParser.json({ extended: true }));
   app.use(express.static("static"));
   // app.get("/chat", (req, res) => {
   //   res.sendFile(__dirname + "/public/chat.html");
@@ -42,6 +43,7 @@ function startServer() {
   });
 
   app.get("/show", controller.findAll);
+  app.post("/upload", controller.upload);
   // app.use("/api/show", routes.company);
   // app.use("/api/search", routes.company);
   // app.use("/api/company", routes.company);
