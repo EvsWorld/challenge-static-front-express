@@ -178,3 +178,10 @@ export const search = async (req, res) => {
   console.log("search returns :>> ", r);
   res.json(JSON.stringify(r));
 };
+
+export const findOrder = async (id) => {
+  const newOrdersDb = await readFileJSON(__dirname + "/../db/newOrders.json");
+  const foundOrder = newOrdersDb.find((order) => (order.productId = id));
+  // console.log("foundOrder :>> ", foundOrder);
+  return foundOrder;
+};

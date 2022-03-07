@@ -7,7 +7,7 @@ const http = require("http"),
   { Server } = require("socket.io");
 
 const SERVER_PORT = 8080;
-
+const subscribedProductIds = [];
 // https://stackoverflow.com/questions/17696801/express-js-app-listen-vs-server-listen/17697134#17697134
 function startServer() {
   const app = express();
@@ -44,25 +44,43 @@ function startServer() {
   );
 
   // // bind socket.io to that server
-  // const io = new Server(httpServer);
+  const io = new Server(httpServer);
 
   // // will fire for every new websocket connection
-  // io.on("connect", (socket) => {
-  //   console.log("connected:", socket.client.id);
-  //   socket.on("serverEvent", function (data) {
-  //     console.log("\n\nnew msg fom client:>> ", data);
-  //   });
-  //   socket.on("disconnect", () => {
-  //     console.info(`Socket ${socket.id} has disconnected.`);
-  //   });
+  io.on("connect", (socket) => {
+    console.log("connected:", socket.client.id);
+    socket.on("subscribe", function (data) {
+      console.log("\n\nnew msg fom client:>> ", data);
+      const arr = [...data];
+      const idArray = arr
+        .slice(1, arr.length - 1)
+        .filter((e) => e !== ",")
+        .map((e) => Number(e));
+      subscribedProductIds = idArray;
+      console.log("\n idArray:>> ", idArray);
+      idArray.forEach(async (id) => {
+        const order = await controller.findOrder(id);
+        socket.emit("order", JSON.stringify(order));
+      });
+    });
+    socket.on("disconnect", () => {
+      console.info(`Socket ${socket.id} has disconnected.`);
+    });
 
-  //   // echoes on the terminal every "hello" message this socket sends
-  //   socket.on("hello", (helloMsg) =>
-  //     console.info(`Socket ${socket.id} says: "${helloMsg}"`)
-  //   );
+    // echoes on the terminal every "hello" message this socket sends
+    socket.on("hello", (helloMsg) =>
+      console.info(`Socket ${socket.id} says: "${helloMsg}"`)
+    );
 
-  //   // socket.emit("order", upload());
-  // });
+    const testOrder = {
+      buyer: "Sprocket Corp",
+      productId: 2,
+      quantity: 33,
+      shippingAddress: "123 Smith Street, County, Country.",
+      shippingTarget: 1646762160000,
+    };
+    // socket.emit("order", JSON.stringify(testOrder));
+  });
 }
 
 startServer();
