@@ -139,9 +139,9 @@ export const upload = async (req, res) => {
     const shippingAddress = customersDb.find(
       (customer) => customer.name === data.buyer
     ).address;
-    const shippingTarget = new Date().getTime();
-    // new Date(data.shippingDate).getTime() +
-    // new Date(data.shippingTime).getTime(); // TODO:
+    const shippingTarget = new Date(
+      data.shippingDate + " " + data.shippingTime
+    ).getTime();
     const newItem = {
       buyer: data.buyer,
       productId,
@@ -160,6 +160,7 @@ export const upload = async (req, res) => {
 
 export const search = async (req, res) => {
   const { productId, buyer, shippingTarget } = req.query;
+  console.log("shippingTarget :>> ", typeof shippingTarget);
   const newOrdersDb = await readFileJSON(__dirname + "/../db/newOrders.json");
   console.log("productId :>> ", typeof productId);
   console.log("{ productId, buyer, shippingTarget } :>> ", {
@@ -171,7 +172,7 @@ export const search = async (req, res) => {
     return (
       order.productId === Number(productId) ||
       order.buyer === buyer ||
-      order.shippingTarget > shippingTarget
+      order.shippingTarget > Number(shippingTarget)
     );
   });
   console.log("search returns :>> ", r);
