@@ -1,4 +1,9 @@
 import fs from "fs";
+// const io = require("../socketio").getIO();
+// const io = await import("../socketio.js").getIO();
+// const io = require("../socketio.js").getIO();
+// import mysio from "../socketio.js";
+// const io = mysio.getIO();
 
 export function readFileJSON(filename) {
   return new Promise((resolve, reject) => {
@@ -32,6 +37,22 @@ export const findAll = async (req, res) => {
   console.log("orders :>> ", orders);
   res.send(orders);
 };
+
+export function Announce(socket) {
+  this.update = async function (data) {
+    console.log("\n\nnew msg fom client:>> ", JSON.parse(data));
+    const arr = JSON.parse(data);
+    const orders = await readFileJSON(__dirname + "/db/newOrders.json");
+    // console.log("orders :>> ", orders);
+    arr.forEach(async (id) => {
+      const ordersWithThisId = orders.filter((order) => order.productId === id);
+      console.log("ordersWithThisId :>> ", ordersWithThisId);
+      ordersWithThisId.forEach((order) =>
+        socket.emit("order", JSON.stringify(order))
+      );
+    });
+  };
+}
 
 // TODO: modify to accept form data via a POST request with a content type of application/x-www-form-urlencoded.
 export const upload = async (req, res) => {
