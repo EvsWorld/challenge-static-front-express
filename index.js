@@ -1,13 +1,14 @@
 import bodyParser from "body-parser";
 import * as controller from "./controllers/company.controller";
 import routes from "./routes";
+import { readFileJSON } from "./controllers/company.controller";
 const http = require("http"),
   express = require("express"),
   morgan = require("morgan"),
   { Server } = require("socket.io");
 
 const SERVER_PORT = 8080;
-const subscribedProductIds = [];
+let subscribedProductIds = [];
 // https://stackoverflow.com/questions/17696801/express-js-app-listen-vs-server-listen/17697134#17697134
 function startServer() {
   const app = express();
@@ -49,18 +50,19 @@ function startServer() {
   // // will fire for every new websocket connection
   io.on("connect", (socket) => {
     console.log("connected:", socket.client.id);
-    socket.on("subscribe", function (data) {
-      console.log("\n\nnew msg fom client:>> ", data);
-      const arr = [...data];
-      const idArray = arr
-        .slice(1, arr.length - 1)
-        .filter((e) => e !== ",")
-        .map((e) => Number(e));
-      subscribedProductIds = idArray;
-      console.log("\n idArray:>> ", idArray);
-      idArray.forEach(async (id) => {
-        const order = await controller.findOrder(id);
-        socket.emit("order", JSON.stringify(order));
+    socket.on("subscribe", async function (data) {
+      console.log("\n\nnew msg fom client:>> ", JSON.parse(data));
+      const arr = JSON.parse(data);
+      const orders = await readFileJSON(__dirname + "/db/newOrders.json");
+      // console.log("orders :>> ", orders);
+      arr.forEach(async (id) => {
+        const ordersWithThisId = orders.filter(
+          (order) => order.productId === id
+        );
+        console.log("ordersWithThisId :>> ", ordersWithThisId);
+        ordersWithThisId.forEach((order) =>
+          socket.emit("order", JSON.stringify(order))
+        );
       });
     });
     socket.on("disconnect", () => {
@@ -68,8 +70,8 @@ function startServer() {
     });
 
     // echoes on the terminal every "hello" message this socket sends
-    socket.on("hello", (helloMsg) =>
-      console.info(`Socket ${socket.id} says: "${helloMsg}"`)
+    socket.on("order", (msg) =>
+      console.info(`Socket ${socket.id} says: "${msg}"`)
     );
 
     const testOrder = {

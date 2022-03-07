@@ -1,6 +1,6 @@
 import fs from "fs";
 
-function readFileJSON(filename) {
+export function readFileJSON(filename) {
   return new Promise((resolve, reject) => {
     fs.readFile(filename, "utf8", function (err, data) {
       if (err) {
@@ -16,7 +16,7 @@ function readFileJSON(filename) {
   });
 }
 
-function writeFileJSON(filename, data) {
+export function writeFileJSON(filename, data) {
   return new Promise((resolve, reject) => {
     fs.writeFile(filename, JSON.stringify(data), function (err, data) {
       if (err) {
@@ -27,79 +27,6 @@ function writeFileJSON(filename, data) {
   });
 }
 
-// let ordersDb = {},
-//   customersDb = {},
-//   usersDb = {},
-//   productsDb = {},
-//   newOrdersDb = {};
-
-// async function loadData() {
-//   try {
-//     ordersDb = await readFileJSON(__dirname + "/../db/orders.json");
-//     customersDb = await readFileJSON(__dirname + "/../db/customers.json");
-//     usersDb = await readFileJSON(__dirname + "/../db/users.json");
-//     productsDb = await readFileJSON(__dirname + "/../db/products.json");
-//     newOrdersDb = await readFileJSON(__dirname + "/../db/newOrders.json");
-
-//     console.log("ordersDb :>> ", ordersDb);
-//   } catch (err) {
-//     console.error(err);
-//   }
-// }
-// loadData();
-
-// const ordersDb = fs.readFile(
-//   __dirname + "/../db/orders.json",
-//   // "utf8",
-//   (err, data) => {
-//     if (err) {
-//       return console.error(err);
-//     }
-//     return JSON.parse(data.toString());
-//   }
-// );
-
-// const customersDb = fs.readFile(
-//   __dirname + "/../db/customers.json",
-//   (err, data) => {
-//     if (err) {
-//       return console.error(err);
-//     }
-//     return JSON.parse(data);
-//   }
-// );
-
-// const usersDb = fs.readFile(
-//   __dirname + "/../db/users.json",
-//   "utf8",
-//   (err, data) => {
-//     if (err) {
-//       return console.error(err);
-//     }
-//     return JSON.parse(data);
-//   }
-// );
-
-// const productsDb = fs.readFile(
-//   __dirname + "/../db/products.json",
-//   "utf8",
-//   (err, data) => {
-//     if (err) {
-//       return console.error(err);
-//     }
-//     return JSON.parse(data);
-//   }
-// );
-// // console.log("productsDb :>> ", productsDb);
-// const newOrdersDb = fs.readFile(
-//   __dirname + "/../db/newOrders.json",
-//   (err, data) => {
-//     if (err) {
-//       return console.error(err);
-//     }
-//     return JSON.parse(data);
-//   }
-// );
 export const findAll = async (req, res) => {
   const orders = await readFileJSON(__dirname + "/../db/newOrders.json");
   console.log("orders :>> ", orders);
@@ -149,6 +76,7 @@ export const upload = async (req, res) => {
       shippingAddress,
       shippingTarget,
     };
+
     return newItem;
   });
   console.log("newOrdersArray :>> ", newOrdersArray);
@@ -180,8 +108,9 @@ export const search = async (req, res) => {
 };
 
 export const findOrder = async (id) => {
+  console.log("findOrder id :>> ", id);
   const newOrdersDb = await readFileJSON(__dirname + "/../db/newOrders.json");
   const foundOrder = newOrdersDb.find((order) => (order.productId = id));
-  // console.log("foundOrder :>> ", foundOrder);
+  console.log("foundOrder :>> ", foundOrder);
   return foundOrder;
 };
