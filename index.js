@@ -1,6 +1,3 @@
-/*
- Your solution should go here.
-*/
 import bodyParser from "body-parser";
 import * as controller from "./controllers/company.controller";
 import routes from "./routes";
