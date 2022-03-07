@@ -108,12 +108,28 @@ export const findAll = async (req, res) => {
 
 // TODO: modify to accept form data via a POST request with a content type of application/x-www-form-urlencoded.
 export const upload = async (req, res) => {
-  const data = req.body;
+  let data = req.body;
+  console.log("req.body: ", data);
+  // NOTE: for when sending via form encoded params
+  if (req.header("content-type") === "application/x-www-form-urlencoded") {
+    let items;
+    if (typeof data.item === "string") {
+      items = [{ item: data.item, quantity: Number(data.quantity) }];
+    } else {
+      items = data.item.map((item, i) => {
+        const name = item;
+        const r = { item: name, quantity: Number(data.quantity[i]) };
+        return r;
+      });
+    }
+    console.log("my items :>> ", items);
+    data = { ...req.body, items };
+  }
+  console.log("data after modified: ", data);
   const customersDb = await readFileJSON(__dirname + "/../db/customers.json");
   const productsDb = await readFileJSON(__dirname + "/../db/products.json");
   const newOrdersDb = await readFileJSON(__dirname + "/../db/newOrders.json");
 
-  console.log("upload data :>> ", data);
   // TODO: seperate the data into multiple objects (one for each item), then add
   // productId field which can get from products.json. Then
   const newOrdersArray = data.items.map((item) => {
@@ -123,7 +139,9 @@ export const upload = async (req, res) => {
     const shippingAddress = customersDb.find(
       (customer) => customer.name === data.buyer
     ).address;
-    const shippingTarget = new Date().getTime(); // TODO:
+    const shippingTarget = new Date().getTime();
+    // new Date(data.shippingDate).getTime() +
+    // new Date(data.shippingTime).getTime(); // TODO:
     const newItem = {
       buyer: data.buyer,
       productId,
@@ -134,11 +152,10 @@ export const upload = async (req, res) => {
     return newItem;
   });
   console.log("newOrdersArray :>> ", newOrdersArray);
-  newOrdersArray.forEach((order) => newOrdersDb.push(order));
   // TODO: append to end
+  newOrdersArray.forEach((order) => newOrdersDb.push(order));
   await writeFileJSON(__dirname + "/../db/newOrders.json", newOrdersDb);
   res.status(200).send(newOrdersArray);
-  // return newOrder;
 };
 
 export const search = async (req, res) => {

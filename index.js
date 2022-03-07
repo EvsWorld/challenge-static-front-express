@@ -15,8 +15,14 @@ function startServer() {
   app.use(
     morgan(":method :url  :req[header]  |   :response-time  |  :date[web]")
   );
-  app.use(bodyParser.json());
+  app.use(express.json());
   app.use(bodyParser.json({ extended: true }));
+  app.use(
+    bodyParser.urlencoded({
+      // to support URL-encoded bodies
+      extended: true, // specifies that req.body object will contain values of type other than strings
+    })
+  );
   app.use(express.static("static"));
 
   app.use("/ping", (req, res) => {
