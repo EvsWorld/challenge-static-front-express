@@ -2,8 +2,7 @@ import bodyParser from "body-parser";
 // import * as controller from "./controllers/company.controller";
 import sio from "./socketio";
 import routes from "./routes";
-// import { readFileJSON, Announce } from "./controllers/company.controller";
-// import mysio from "./socketio.js";
+import { readFileJSON, Announce } from "./controllers/company.controller";
 const http = require("http"),
   express = require("express"),
   morgan = require("morgan");
@@ -49,31 +48,31 @@ function startServer() {
   app.use("/", routes.company);
 
   const io = sio.getIO();
-  // function Report(socket) {
-  //   this.update = async function (data) {
-  //     console.log("\n\nnew msg fom client:>> ", JSON.parse(data));
-  //     const arr = JSON.parse(data);
-  //     const orders = await readFileJSON(__dirname + "/db/newOrders.json");
-  //     // console.log("orders :>> ", orders);
-  //     arr.forEach(async (id) => {
-  //       const ordersWithThisId = orders.filter(
-  //         (order) => order.productId === id
-  //       );
-  //       console.log("ordersWithThisId :>> ", ordersWithThisId);
-  //       ordersWithThisId.forEach((order) =>
-  //         socket.emit("order", JSON.stringify(order))
-  //       );
-  //     });
-  //   };
-  // }
+
+  function Report(socket) {
+    this.update = async function (data) {
+      console.log("\n\nnew msg fom client:>> ", JSON.parse(data));
+      const arr = JSON.parse(data);
+      const orders = await readFileJSON(__dirname + "/db/newOrders.json");
+      // console.log("orders :>> ", orders);
+      arr.forEach(async (id) => {
+        const ordersWithThisId = orders.filter(
+          (order) => order.productId === id
+        );
+        console.log("ordersWithThisId :>> ", ordersWithThisId);
+        ordersWithThisId.forEach((order) =>
+          socket.emit("order", JSON.stringify(order))
+        );
+      });
+    };
+  }
 
   // // will fire for every new websocket connection
   io.on("connect", (socket) => {
-    // let report = new Report(socket);
-    // let announce = new Announce(socket);
+    let report = new Report(socket);
     console.log("connected:", socket.client.id);
     socket.on("subscribe", async function (newData) {
-      // report.update(newData);
+      report.update(newData);
     });
     socket.on("disconnect", () => {
       console.info(`Socket ${socket.id} has disconnected.`);

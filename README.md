@@ -16,7 +16,7 @@ All requests below, and static file requests other than for /, /index.html and /
 
 5: Implement an endpoint http://localhost:8080/search that is similar to http://localhost:8080/show but accepts GET query string parameters to filter the data to that which matches. The search parameters are productId (exact match), buyer (exact match) or shippingTarget (match any value after the submitted time). This can be tested from http://localhost:8080/search.html
 
-6: Use socket.io to set up a websocket on the server, which will emit existing and new orders individually (not an array) to connected web sockets from http://localhost:8080/live.html. Each connected socket will send a subscribe message with an array of productIds they want to be informed about. You must send every matching product’s order in the converted format individually to each socket that has requested information about it in an order message.messagemessage
+6: Use socket.io to set up a websocket on the server, which will emit existing and new orders individually (not an array) to connected web sockets from http://localhost:8080/live.html. Each connected socket will send a subscribe message with an array of productIds they want to be informed about. You must send every matching product’s order in the converted format individually to each socket that has requested information about it in an order message.
 
 ### The data the app will receive will look like the code below. The initial data file will have an array of these objects, but subsequent submissions will only be single objects.
 
