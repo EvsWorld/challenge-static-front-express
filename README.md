@@ -64,3 +64,12 @@ For the above order you should end up with 2 separate objects:
 "shippingTarget" : 1527512400000
 }
 ```
+
+---
+
+## How to run
+
+```
+npm install
+npm start
+```
